@@ -1,0 +1,15 @@
+﻿targets:
+  $default:
+    builders:
+      flutter_translate_gen|static_keys_generator:
+        enabled: true
+
+builders:
+  static_keys_generator:
+    target: ":flutter_translate_gen"
+    import: "package:flutter_translate_gen/builder.dart"
+    builder_factories: ["staticKeysBuilder"]
+    build_extensions: {".dart": ["*.g.part"]}
+    auto_apply: dependents
+    build_to: cache
+    applies_builders: ["source_gen|combining_builder"]
