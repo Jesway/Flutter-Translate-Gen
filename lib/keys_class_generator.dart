@@ -6,12 +6,11 @@ class KeysClassGenerator
 {
     static Reference get stringType => TypeReference((trb) => trb..symbol = "String");
 
-    static Class generateClass(TranslateKeysOptions options, List<LocalizedItem> translations, String className)
+    static Class generateClass(TranslateKeysOptions options, List<LocalizedItem> items, String className)
     {
         return Class((x) => x
-            ..docs.add("/// Contains the static localization keys")
             ..name = className.substring(2)
-            ..fields.addAll(translations
+            ..fields.addAll(items
                     .map((translation) => generateField(translation, options))
                     .toList()),
         );
