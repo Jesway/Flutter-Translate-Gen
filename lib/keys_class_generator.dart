@@ -1,37 +1,31 @@
 ﻿import 'package:code_builder/code_builder.dart';
-import 'package:dart_casing/dart_casing.dart';
-import 'package:flutter_translate_gen/translation.dart';
+import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
+import 'package:flutter_translate_gen/localized_item.dart';
 
-const String strKeysClassName = "_\$Keys";
-
-Reference get stringType => TypeReference((trb) => trb..symbol = "String");
-
-Class generateKeysClass(List<Translation> translations, String className)
+class KeysClassGenerator
 {
-    return Class((x) => x
+    static Reference get stringType => TypeReference((trb) => trb..symbol = "String");
+
+    static Class generateClass(TranslateKeysOptions options, List<LocalizedItem> translations, String className)
+    {
+        return Class((x) => x
             ..docs.add("/// Contains the static localization keys")
             ..name = className.substring(2)
             ..fields.addAll(translations
-                    .map((translation) => generateField(translation))
+                    .map((translation) => generateField(translation, options))
                     .toList()),
-    );
+        );
+    }
+
+    static Field generateField(LocalizedItem item, TranslateKeysOptions options)
+    {
+        return Field((x) => x
+                ..name = item.fieldName
+                ..type = stringType
+                ..static = true
+                ..modifier = FieldModifier.constant
+                ..assignment = literalString(item.key).code,
+        );
+    }
 }
-
-Field generateField(Translation translation)
-{
-    var a = translation.keyVariable;
-
-    var key = translation.keyVariable.replaceAll("\$", "\\");
-    var name = Casing.titleCase(key, separator: translation.separator);
-
-    return Field(
-                (fb) => fb
-            ..name = name //translation.keyVariable.replaceAll("\$", '_')
-            ..type = stringType
-            ..static = true
-            ..modifier = FieldModifier.final$
-            ..assignment = literalString(translation.key).code,
-    );
-}
-
 

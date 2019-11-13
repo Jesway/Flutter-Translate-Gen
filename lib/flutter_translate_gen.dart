@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:dart_utils/dart_utils.dart';
 import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
 import 'package:flutter_translate_gen/keys_class_generator.dart';
-import 'package:flutter_translate_gen/translation.dart';
+import 'package:flutter_translate_gen/localized_item.dart';
 import 'package:glob/glob.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -27,7 +28,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
 
         validateClassName(className);
 
-        List<Translation> translations;
+        List<LocalizedItem> translations;
 
         try
         {
@@ -40,7 +41,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
 
         validateLocalizationItems(translations);
 
-        final file = Library((lb) => lb..body.addAll([generateKeysClass(translations, className)]));
+        final file = Library((lb) => lb..body.addAll([KeysClassGenerator.generateClass(options, translations, className)]));
 
         final DartEmitter emitter = DartEmitter(Allocator());
 
@@ -55,7 +56,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
                 separator: annotation.peek("separator")?.stringValue);
     }
 
-    Future<List<Translation>> getKeyMap(BuildStep step, TranslateKeysOptions options) async
+    Future<List<LocalizedItem>> getKeyMap(BuildStep step, TranslateKeysOptions options) async
     {
         var mapping = <String, List<String>>{};
 
@@ -70,11 +71,22 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
             translationMap.forEach((key, value) => (mapping[key] ??= <String>[]).add(value));
         }
 
-        var translations = List<Translation>();
+        var translations = List<LocalizedItem>();
 
-        mapping.forEach((id, trans) => translations.add(Translation(key: id, translations: trans, separator: options.separator),));
+        mapping.forEach((id, trans) => translations.add(LocalizedItem(id, trans, getKeyFieldName(id, options))));
 
         return translations;
+    }
+
+    String getKeyFieldName(String key, TranslateKeysOptions options)
+    {
+        switch(options.caseStyle)
+        {
+            case CaseStyle.titleCase: return Casing.titleCase(key,separator: options.separator);
+            case CaseStyle.upperCase: return Casing.upperCase(key,separator: options.separator);
+            case CaseStyle.lowerCase: return Casing.lowerCase(key,separator: options.separator);
+            default: return throw InvalidGenerationSourceError("Invalid CaseStyle specified: ${options.caseStyle.toString()}");
+        }
     }
 
     Map<String, String> getTranslationMap(Map<String, dynamic> jsonMap, {String parentKey})
@@ -101,7 +113,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
         return map;
     }
 
-    void validateLocalizationItems(List<Translation> translations)
+    void validateLocalizationItems(List<LocalizedItem> translations)
     {
         if (translations.isEmpty) return;
 
