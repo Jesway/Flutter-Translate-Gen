@@ -6,7 +6,7 @@
 
 Statically-typed localization keys generator for [flutter translate](https://github.com/jesway/flutter_translate)
 
-Please [check this wiki page](https://github.com/jesway/flutter_translate/wiki/3.-Generating-statically-typed-localization-keys) for documentation on generating static keys.
+Please [check this wiki page](https://github.com/jesway/flutter_translate/wiki/3.-Generating-statically-typed-localization-keys) for documentation on how to generate static localization keys.
 
 And [here you can find](https://github.com/jesway/flutter_translate/tree/master/example_static_keys) a fully working example.
 
