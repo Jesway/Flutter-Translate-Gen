@@ -17,5 +17,12 @@
             "message": "Please select a language from the list",
             "title": "Language Selection"
         }
+    },
+    "plural": {
+        "demo": {
+            "0": "Por favor, comience a presionar el botón 'más'.",
+            "1": "Has presionado el botón una vez.",
+            "else": "Ha presionado el botón {{value}} veces."
+        }
     }
 }
