@@ -6,23 +6,24 @@ part of 'keys.dart';
 // Generator: FlutterTranslateGen
 // **************************************************************************
 
-/// Contains the static localization keys
 class Keys {
-  static final String App_Bartitle = 'app_bar.title';
+  static const String App_Bar_Title = 'app_bar.title';
 
-  static final String Buttoncancel = 'button.cancel';
+  static const String Button_Cancel = 'button.cancel';
 
-  static final String Buttonchange_Language = 'button.change_language';
+  static const String Button_Change_Language = 'button.change_language';
 
-  static final String Languagenameen = 'language.name.en';
+  static const String Language_Name_En = 'language.name.en';
 
-  static final String Languagenamees = 'language.name.es';
+  static const String Language_Name_Es = 'language.name.es';
 
-  static final String Languagenamefa = 'language.name.fa';
+  static const String Language_Name_Fa = 'language.name.fa';
 
-  static final String Languageselected_Message = 'language.selected_message';
+  static const String Language_Selected_Message = 'language.selected_message';
 
-  static final String Languageselectionmessage = 'language.selection.message';
+  static const String Language_Selection_Message = 'language.selection.message';
 
-  static final String Languageselectiontitle = 'language.selection.title';
+  static const String Language_Selection_Title = 'language.selection.title';
+
+  static const String Plural_Demo = 'plural.demo';
 }
