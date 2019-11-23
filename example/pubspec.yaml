@@ -7,8 +7,8 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  flutter_translate_annotations: ^1.0.0
+  flutter_translate_annotations: ^1.0.1
   flutter_translate_gen:
     path: ../
-  build_runner: ^1.7.0
-  build: ^1.2.1
+  build: '>=1.2.1 <=1.2.2'
+  build_runner: '>=1.7.0 <=1.7.2'
