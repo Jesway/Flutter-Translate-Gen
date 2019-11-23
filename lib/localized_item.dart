@@ -1,6 +1,4 @@
-﻿import 'package:dart_casing/dart_casing.dart';
-
-class LocalizedItem
+﻿class LocalizedItem
 {
     final String key;
     final List<String> translations;

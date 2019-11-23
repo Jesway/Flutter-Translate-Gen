@@ -15,7 +15,7 @@ import 'package:source_gen/source_gen.dart';
 
 class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
 {
-    static const List<String> reservedKeys = const["0", "1", "else"];
+    static List<String> reservedKeys = const["0", "1", "else"];
 
     const FlutterTranslateGen();
 
