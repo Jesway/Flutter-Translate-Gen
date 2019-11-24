@@ -10,3 +10,7 @@
 
 - Added support for pluralization
 - '0', '1' and 'else' are now reserved words 
+
+## 1.2.4
+
+- Fixed dependency compatibility issues
