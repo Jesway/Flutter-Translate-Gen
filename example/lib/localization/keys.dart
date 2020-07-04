@@ -11,4 +11,4 @@ part 'keys.g.dart';
 // ignore: unused_element
 class _$Keys {}
 
-const i18n = Keys();
+const i18n = const _$_$Keys();

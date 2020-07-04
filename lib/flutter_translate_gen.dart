@@ -29,12 +29,12 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
     final options = _parseOptions(annotation);
     final translations = await _getTranslations(buildStep, options);
 
-    final generatedClass = const KeysClassGenerator().generate(
+    final generatedClasses = const KeysClassGenerator().generate(
       options,
       translations,
       className,
     );
-    final generatedLib = Library((lib) => lib.body.add(generatedClass));
+    final generatedLib = Library((lib) => lib.body.addAll(generatedClasses));
 
     return _createOutput(generatedLib);
   }
@@ -46,14 +46,14 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
         separator: annotation.asString("separator"),
       );
 
-  Future<List<LocalizedItem>> _getTranslations(
+  Future<LocalizedItems> _getTranslations(
     BuildStep step,
     TranslateKeysOptions options,
   ) async {
     try {
       return await KeyMapParser(step, options).parse();
-    } on FormatException catch (_) {
-      throw InvalidGenerationSourceError("Ths JSON format is invalid.");
+    } catch (e) {
+      throw InvalidGenerationSourceError("Ths JSON format is invalid: $e");
     }
   }
 

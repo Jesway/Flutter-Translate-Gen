@@ -21,4 +21,9 @@ main() {
   test("simple", () {
     expect(i18n.simple, "This is a simple example");
   });
+
+  test("nested", () {
+    expect(i18n.nested.child, "This is a nested element");
+    expect(i18n.nested.nested.child, "This is an even deeper nested element");
+  });
 }

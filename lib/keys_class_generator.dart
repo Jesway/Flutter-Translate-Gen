@@ -7,26 +7,45 @@ class KeysClassGenerator {
 
   Reference get _stringType => TypeReference((trb) => trb.symbol = "String");
 
-  Class generate(TranslateKeysOptions options, List<LocalizedItem> items,
-      String className) {
-    return Class(
-      (x) => x
-        ..name = className.substring(2)
-        ..methods.addAll(items
-            .map((translation) => _generateField(translation, options))
-            .toList())
-        ..constructors.add(Constructor((c) => c.constant = true)),
+  List<Class> generate(
+      TranslateKeysOptions options, LocalizedItems items, String className) {
+    return _createClassRecursive(items, "_\$$className");
+  }
+
+  List<Class> _createClassRecursive(LocalizedItems parent, String name) {
+    final classes = <Class>[];
+    classes.add(
+      Class(
+        (cls) => cls
+          ..name = name
+          ..methods.addAll(parent.leafs.map(_generateLeaf))
+          ..fields.addAll(parent.branches.map(_generateBranch))
+          ..constructors.add(Constructor((c) => c.constant = true)),
+      ),
+    );
+    classes.addAll(parent.branches
+        .expand((items) => _createClassRecursive(items, items.className)));
+    return classes;
+  }
+
+  Field _generateBranch(LocalizedItems items) {
+    return Field(
+      (f) => f
+        ..name = items.key.toLowerCase()
+        ..type = TypeReference((ref) => ref.symbol = items.className)
+        ..modifier = FieldModifier.final$
+        ..assignment = Code("const ${items.className}()"),
     );
   }
 
-  Method _generateField(LocalizedItem item, TranslateKeysOptions options) {
+  Method _generateLeaf(LocalizedItem item) {
     return Method(
       (m) => m
-        ..name = item.fieldName.toLowerCase()
+        ..name = item.key.toLowerCase()
         ..returns = _stringType
         ..type = MethodType.getter
         ..lambda = true
-        ..body = Code("translate(${literalString(item.key).code})"),
+        ..body = Code("translate(${literalString(item.fullPath).code})"),
     );
   }
 }

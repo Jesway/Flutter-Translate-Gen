@@ -1,3 +1,9 @@
 {
-    "simple": "This is a simple example"
+    "simple": "This is a simple example",
+    "nested": {
+        "child": "This is a nested element",
+        "nested": {
+            "child": "This is an even deeper nested element"
+        }
+    }
 }

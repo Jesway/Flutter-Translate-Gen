@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:build/build.dart';
-import 'package:dart_casing/dart_casing.dart';
 import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:glob/glob.dart';
-import 'package:source_gen/source_gen.dart';
 
 import 'localized_item.dart';
 
@@ -16,68 +14,41 @@ class KeyMapParser {
 
   KeyMapParser(this.step, this.options);
 
-  Future<List<LocalizedItem>> parse() async {
-    final mapping = <String, List<String>>{};
-
+  Future<LocalizedItemComponent> parse() async {
     final assets = step.findAssets(Glob(options.path, recursive: true));
 
+    final root = LocalizedItems(null, null);
     await for (final entity in assets) {
       final Map<String, dynamic> jsonMap = json.decode(
         await step.readAsString(entity),
       );
-      getTranslationMap(jsonMap).forEach(
-        (key, value) => (mapping[key] ??= []).add(value),
-      );
+
+      final lang = entity.pathSegments.last.replaceAll(".json", "");
+      parseRecursive(lang, jsonMap, root);
     }
 
-    return mapping.entries
-        .map((e) => LocalizedItem(
-              e.key,
-              e.value,
-              getKeyFieldName(e.key, options),
-            ))
-        .toList(growable: false);
+    return root;
   }
 
-  Map<String, String> getTranslationMap(Map<String, dynamic> jsonMap,
-      {String parentKey}) {
-    final map = <String, String>{};
-
-    for (final entry in jsonMap.keys) {
-      String key;
-
-      if (pluralsKeys.contains(entry)) {
-        key = parentKey;
+  void parseRecursive(
+    String lang,
+    Map<String, dynamic> json,
+    LocalizedItems parent,
+  ) {
+    for (final key in json.keys) {
+      if (pluralsKeys.contains(key)) {
+        // TODO key = parent.key;
       } else {
-        key = parentKey != null ? "$parentKey.$entry" : entry;
+        final translation = json[key];
+
+        if (translation is String) {
+          final item = parent.ensureItem(key);
+          item.translations[lang] = translation;
+        } else if (translation is Map<String, dynamic>) {
+          final items = parent.ensureItems(key);
+          parseRecursive(lang, translation, items);
+        }
       }
-
-      if (key == null) continue;
-
-      final value = jsonMap[entry];
-
-      if (value is String) {
-        map.putIfAbsent(key, () => value);
-      } else {
-        final entries = getTranslationMap(value, parentKey: key);
-        map.addAll(entries);
-      }
-    }
-
-    return map;
-  }
-
-  String getKeyFieldName(String key, TranslateKeysOptions options) {
-    switch (options.caseStyle) {
-      case CaseStyle.titleCase:
-        return Casing.titleCase(key, separator: options.separator);
-      case CaseStyle.upperCase:
-        return Casing.upperCase(key, separator: options.separator);
-      case CaseStyle.lowerCase:
-        return Casing.lowerCase(key, separator: options.separator);
-      default:
-        return throw InvalidGenerationSourceError(
-            "Invalid CaseStyle specified: ${options.caseStyle.toString()}");
     }
   }
 }
