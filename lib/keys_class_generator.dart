@@ -5,8 +5,6 @@ import 'package:flutter_translate_gen/localized_item.dart';
 class KeysClassGenerator {
   const KeysClassGenerator();
 
-  Reference get _stringType => TypeReference((trb) => trb.symbol = "String");
-
   List<Class> generate(
       TranslateKeysOptions options, LocalizedItems items, String className) {
     return _createClassRecursive(items, "_\$$className");
@@ -33,14 +31,14 @@ class KeysClassGenerator {
     return Field(
       (f) => f
         ..name = items.camelCasedKey
-        ..type = TypeReference((ref) => ref.symbol = items.className)
+        ..type = _type(items.className)
         ..modifier = FieldModifier.final$
-        ..assignment = Code("const ${items.className}()"),
+        ..assignment = "const ${items.className}()".asCode,
     );
   }
 
   Method _generateLeaf(LocalizedItem item) {
-    final params = item.params;
+    final params = item.args;
     return params.isEmpty
         ? _generateLeafAsGetter(item)
         : _generateLeafAsMethod(item, params);
@@ -50,45 +48,67 @@ class KeysClassGenerator {
     return Method(
       (m) => m
         ..name = item.camelCasedKey
-        ..returns = _stringType
+        ..returns = _string$
         ..type = MethodType.getter
         ..lambda = true
-        ..body = Code("translate(${literalString(item.fullPath).code})"),
+        ..body = "translate(${item.fullPathLiteral})".asCode,
     );
   }
 
-  Method _generateLeafAsMethod(LocalizedItem item, Set<String> params) {
-    String args = params.map((p) => '"$p": $p').join(",");
-
+  Method _generateLeafAsMethod(LocalizedItem item, Set<String> args) {
     return Method(
       (m) => m
         ..name = item.camelCasedKey
-        ..returns = _stringType
+        ..returns = _string$
         ..lambda = true
-        ..optionalParameters.addAll(params.map((param) => Parameter(
-              (p) => p
-                ..name = param
-                ..type = TypeReference((ref) => ref.symbol = "dynamic")
-                ..annotations
-                    .add(TypeReference((ref) => ref.symbol = "required"))
-                ..named = true,
-            )))
-        ..body = Code(
-            "translate(${literalString(item.fullPath).code}, args: {$args})"),
+        ..optionalParameters.addAll(args.asParameters)
+        ..body =
+            "translate(${item.fullPathLiteral}, args: ${args.asMap})".asCode,
     );
   }
 
   Method _generateLeafAsPlural(LocalizedItems plural) {
+    final args = plural.leafs.expand((leaf) => leaf.args).toSet();
+    final body = args.isEmpty
+        ? "translatePlural(${plural.fullPathLiteral}, value)".asCode
+        : "translatePlural(${plural.fullPathLiteral}, value, args: ${args.asMap})"
+            .asCode;
+
     return Method(
       (m) => m
         ..name = plural.camelCasedKey
-        ..returns = _stringType
+        ..returns = _string$
         ..lambda = true
-        ..requiredParameters.add(Parameter((p) => p
-          ..name = "value"
-          ..type = TypeReference((ref) => ref.symbol = "int")))
-        ..body = Code(
-            "translatePlural(${literalString(plural.fullPath).code}, value)"),
+        ..requiredParameters.add(
+          Parameter((p) => p
+            ..name = "value"
+            ..type = _int$),
+        )
+        ..optionalParameters.addAll(args.asParameters)
+        ..body = body,
     );
   }
+}
+
+final Reference _string$ = _type("String");
+final Reference _int$ = _type("int");
+final Reference _dynamic$ = _type("dynamic");
+final Reference _required$ = _type("required");
+
+Reference _type(String type) => TypeReference((trb) => trb.symbol = type);
+
+extension on String {
+  Code get asCode => Code(this);
+}
+
+extension on Set<String> {
+  String get asMap => "{${map((p) => '"$p": $p').join(",")}}";
+
+  Iterable<Parameter> get asParameters => map((param) => Parameter(
+        (p) => p
+          ..name = param
+          ..type = _dynamic$
+          ..annotations.add(_required$)
+          ..named = true,
+      ));
 }

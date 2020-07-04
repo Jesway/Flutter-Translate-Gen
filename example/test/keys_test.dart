@@ -53,4 +53,26 @@ main() {
       expected,
     );
   });
+
+  test("plurals with params", () {
+    final expected = {
+      0: "I have no bananas.",
+      1: "I have one banana.",
+      42: "I have 42 bananas."
+    };
+
+    final banana = i18n.plural.banana;
+    final demoWithArgs = i18n.plural.demoWithArgs;
+
+    final actual = {
+      0: demoWithArgs(0, things: banana(0)),
+      1: demoWithArgs(1, things: banana(1)),
+      42: demoWithArgs(42, things: banana(42))
+    };
+
+    expect(
+      actual,
+      expected,
+    );
+  });
 }

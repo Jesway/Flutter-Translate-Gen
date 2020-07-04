@@ -31,6 +31,15 @@
       "0": "Please start pushing the 'plus' button.",
       "1": "You have pushed the button one time.",
       "else": "You have pushed the button {{value}} times."
+    },
+    "banana": {
+      "1": "banana",
+      "else": "bananas"
+    },
+    "demo_with_args": {
+      "0": "I have no {things}.",
+      "1": "I have one {things}.",
+      "else": "I have {{value}} {things}."
     }
   }
 }

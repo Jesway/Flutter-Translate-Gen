@@ -1,4 +1,5 @@
-﻿import 'package:dart_casing/dart_casing.dart';
+﻿import 'package:code_builder/code_builder.dart';
+import 'package:dart_casing/dart_casing.dart';
 
 abstract class LocalizedItemComponent {
   final String path;
@@ -7,6 +8,8 @@ abstract class LocalizedItemComponent {
   LocalizedItemComponent._(this.path, this.key);
 
   String get fullPath => path == null || path.isEmpty ? key : "$path.$key";
+
+  Code get fullPathLiteral => literalString(fullPath).code;
 
   String get camelCasedKey => Casing.camelCase(key);
 }
@@ -81,7 +84,7 @@ class LocalizedItem extends LocalizedItemComponent {
   void operator []=(String lang, String translation) =>
       translations[lang] = translation;
 
-  Set<String> get params {
+  Set<String> get args {
     final regex = RegExp(r"\{([^\}]+)\}");
     return translations.values
         .expand((translation) =>
