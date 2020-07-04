@@ -3,4 +3,5 @@ targets:
     sources:
       include:
         - assets/i18n/**
+        - assets/i18n.v2/**
         - lib/**

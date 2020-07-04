@@ -10,3 +10,7 @@ build/
 
 # Directory created by dartdoc
 doc/api/
+
+# Flutter files in example/
+.flutter-plugins
+.flutter-plugins-dependencies

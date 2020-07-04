@@ -12,20 +12,21 @@ class KeysClassGenerator {
     return Class(
       (x) => x
         ..name = className.substring(2)
-        ..fields.addAll(items
+        ..methods.addAll(items
             .map((translation) => _generateField(translation, options))
-            .toList()),
+            .toList())
+        ..constructors.add(Constructor((c) => c.constant = true)),
     );
   }
 
-  Field _generateField(LocalizedItem item, TranslateKeysOptions options) {
-    return Field(
-      (field) => field
-        ..name = item.fieldName
-        ..type = _stringType
-        ..static = true
-        ..modifier = FieldModifier.constant
-        ..assignment = literalString(item.key).code,
+  Method _generateField(LocalizedItem item, TranslateKeysOptions options) {
+    return Method(
+      (m) => m
+        ..name = item.fieldName.toLowerCase()
+        ..returns = _stringType
+        ..type = MethodType.getter
+        ..lambda = true
+        ..body = Code("translate(${literalString(item.key).code})"),
     );
   }
 }

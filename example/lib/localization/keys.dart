@@ -1,3 +1,4 @@
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 
 part 'keys.g.dart';
