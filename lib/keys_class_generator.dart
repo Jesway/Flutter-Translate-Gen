@@ -19,6 +19,7 @@ class KeysClassGenerator {
         (cls) => cls
           ..name = name
           ..methods.addAll(parent.leafs.map(_generateLeaf))
+          ..methods.addAll(parent.plurals.map(_generateLeafAsPlural))
           ..fields.addAll(parent.branches.map(_generateBranch))
           ..constructors.add(Constructor((c) => c.constant = true)),
       ),
@@ -45,6 +46,17 @@ class KeysClassGenerator {
         : _generateLeafAsMethod(item, params);
   }
 
+  Method _generateLeafAsGetter(LocalizedItem item) {
+    return Method(
+      (m) => m
+        ..name = item.camelCasedKey
+        ..returns = _stringType
+        ..type = MethodType.getter
+        ..lambda = true
+        ..body = Code("translate(${literalString(item.fullPath).code})"),
+    );
+  }
+
   Method _generateLeafAsMethod(LocalizedItem item, Set<String> params) {
     String args = params.map((p) => '"$p": $p').join(",");
 
@@ -66,14 +78,17 @@ class KeysClassGenerator {
     );
   }
 
-  Method _generateLeafAsGetter(LocalizedItem item) {
+  Method _generateLeafAsPlural(LocalizedItems plural) {
     return Method(
       (m) => m
-        ..name = item.camelCasedKey
+        ..name = plural.camelCasedKey
         ..returns = _stringType
-        ..type = MethodType.getter
         ..lambda = true
-        ..body = Code("translate(${literalString(item.fullPath).code})"),
+        ..requiredParameters.add(Parameter((p) => p
+          ..name = "value"
+          ..type = TypeReference((ref) => ref.symbol = "int")))
+        ..body = Code(
+            "translatePlural(${literalString(plural.fullPath).code}, value)"),
     );
   }
 }

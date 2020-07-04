@@ -37,7 +37,13 @@ class KeyMapParser {
   ) {
     for (final key in json.keys) {
       if (pluralsKeys.contains(key)) {
-        // TODO key = parent.key;
+        parent.isPlural = true;
+        final translation = json[key];
+
+        if (translation is String) {
+          final item = parent.ensureItem(key);
+          item.translations[lang] = translation;
+        }
       } else {
         final translation = json[key];
 

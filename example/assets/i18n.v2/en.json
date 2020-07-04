@@ -28,9 +28,9 @@
   },
   "plural": {
     "demo": {
-      "0": "Por favor, comience a presionar el botón 'más'.",
-      "1": "Has presionado el botón una vez.",
-      "else": "Ha presionado el botón {{value}} veces."
+      "0": "Please start pushing the 'plus' button.",
+      "1": "You have pushed the button one time.",
+      "else": "You have pushed the button {{value}} times."
     }
   }
 }

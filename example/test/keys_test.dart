@@ -34,4 +34,23 @@ main() {
       "Currently selected language is Spanish",
     );
   });
+
+  test("plurals", () {
+    final expected = {
+      0: "Please start pushing the 'plus' button.",
+      1: "You have pushed the button one time.",
+      42: "You have pushed the button 42 times."
+    };
+
+    final actual = {
+      0: i18n.plural.demo(0),
+      1: i18n.plural.demo(1),
+      42: i18n.plural.demo(42)
+    };
+
+    expect(
+      actual,
+      expected,
+    );
+  });
 }

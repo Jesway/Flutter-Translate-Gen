@@ -13,9 +13,11 @@ abstract class LocalizedItemComponent {
 
 class LocalizedItems extends LocalizedItemComponent {
   final Map<String, LocalizedItemComponent> _children;
+  bool isPlural;
 
   LocalizedItems(String path, String key)
       : _children = {},
+        isPlural = false,
         super._(path, key);
 
   LocalizedItemComponent operator [](String key) => _children[key];
@@ -24,10 +26,13 @@ class LocalizedItems extends LocalizedItemComponent {
       _children[key] = item;
 
   Iterable<LocalizedItem> get leafs =>
-      _children.values.where((v) => v is LocalizedItem).cast<LocalizedItem>();
+      _children.values.whereType<LocalizedItem>();
 
   Iterable<LocalizedItems> get branches =>
-      _children.values.where((v) => v is LocalizedItems).cast<LocalizedItems>();
+      _children.values.whereType<LocalizedItems>().where((v) => !v.isPlural);
+
+  Iterable<LocalizedItems> get plurals =>
+      _children.values.whereType<LocalizedItems>().where((v) => v.isPlural);
 
   LocalizedItem ensureItem(String child) {
     if (this[child] == null) {
