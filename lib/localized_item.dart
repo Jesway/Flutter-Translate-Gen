@@ -73,4 +73,13 @@ class LocalizedItem extends LocalizedItemComponent {
 
   void operator []=(String lang, String translation) =>
       translations[lang] = translation;
+
+  Set<String> get params {
+    final regex = RegExp(r"\{([^\}]+)\}");
+    return translations.values
+        .expand((translation) =>
+            regex.allMatches(translation.replaceAll("{{value}}", "ignored")))
+        .map((e) => e.group(1))
+        .toSet();
+  }
 }

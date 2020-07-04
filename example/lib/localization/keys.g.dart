@@ -12,6 +12,8 @@ class _$_$Keys {
   final _$Nested nested = const _$Nested();
 
   String get simple => translate('simple');
+  String params({@required dynamic something}) =>
+      translate('params', args: {"something": something});
 }
 
 class _$Nested {

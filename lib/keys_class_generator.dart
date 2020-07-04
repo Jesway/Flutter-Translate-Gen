@@ -39,6 +39,34 @@ class KeysClassGenerator {
   }
 
   Method _generateLeaf(LocalizedItem item) {
+    final params = item.params;
+    return params.isEmpty
+        ? _generateLeafAsGetter(item)
+        : _generateLeafAsMethod(item, params);
+  }
+
+  Method _generateLeafAsMethod(LocalizedItem item, Set<String> params) {
+    String args = params.map((p) => '"$p": $p').join(",");
+
+    return Method(
+      (m) => m
+        ..name = item.key.toLowerCase()
+        ..returns = _stringType
+        ..lambda = true
+        ..optionalParameters.addAll(params.map((param) => Parameter(
+              (p) => p
+                ..name = param
+                ..type = TypeReference((ref) => ref.symbol = "dynamic")
+                ..annotations
+                    .add(TypeReference((ref) => ref.symbol = "required"))
+                ..named = true,
+            )))
+        ..body = Code(
+            "translate(${literalString(item.fullPath).code}, args: {$args})"),
+    );
+  }
+
+  Method _generateLeafAsGetter(LocalizedItem item) {
     return Method(
       (m) => m
         ..name = item.key.toLowerCase()

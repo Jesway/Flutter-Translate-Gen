@@ -26,4 +26,9 @@ main() {
     expect(i18n.nested.child, "This is a nested element");
     expect(i18n.nested.nested.child, "This is an even deeper nested element");
   });
+
+  test("params", () {
+    expect(i18n.params(something: "parameters"),
+        "This is an example with parameters");
+  });
 }
