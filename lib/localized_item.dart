@@ -7,6 +7,8 @@ abstract class LocalizedItemComponent {
   LocalizedItemComponent._(this.path, this.key);
 
   String get fullPath => path == null || path.isEmpty ? key : "$path.$key";
+
+  String get camelCasedKey => Casing.camelCase(key);
 }
 
 class LocalizedItems extends LocalizedItemComponent {

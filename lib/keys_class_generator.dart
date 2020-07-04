@@ -31,7 +31,7 @@ class KeysClassGenerator {
   Field _generateBranch(LocalizedItems items) {
     return Field(
       (f) => f
-        ..name = items.key.toLowerCase()
+        ..name = items.camelCasedKey
         ..type = TypeReference((ref) => ref.symbol = items.className)
         ..modifier = FieldModifier.final$
         ..assignment = Code("const ${items.className}()"),
@@ -50,7 +50,7 @@ class KeysClassGenerator {
 
     return Method(
       (m) => m
-        ..name = item.key.toLowerCase()
+        ..name = item.camelCasedKey
         ..returns = _stringType
         ..lambda = true
         ..optionalParameters.addAll(params.map((param) => Parameter(
@@ -69,7 +69,7 @@ class KeysClassGenerator {
   Method _generateLeafAsGetter(LocalizedItem item) {
     return Method(
       (m) => m
-        ..name = item.key.toLowerCase()
+        ..name = item.camelCasedKey
         ..returns = _stringType
         ..type = MethodType.getter
         ..lambda = true
