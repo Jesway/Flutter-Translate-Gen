@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -6,9 +6,9 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_utils/dart_utils.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
-import 'package:flutter_translate_gen/key_map_parser.dart';
-import 'package:flutter_translate_gen/keys_class_generator.dart';
+import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
+import 'package:flutter_translate_gen/translation_class_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 class FlutterTranslate {
@@ -34,7 +34,7 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
     if (!element.isConstRootVariable) {
       throw InvalidGenerationSourceError(
         "The annotated element is not a root const variable! "
-        "TranslateKeyOptions should be used on expressions "
+        "@FlutterTranslate should be used on expressions "
         "like const i18n = _\$I18N();",
         element: element,
       );
@@ -44,20 +44,19 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
     final options = FlutterTranslate._fromAnnotation(annotation);
     final translations = await _getTranslations(buildStep, options);
 
-    final generatedClasses = const KeysClassGenerator().generate(
-      options,
+    final generatedClasses = const TranslationClassGenerator().generate(
       translations,
       className,
     );
     return Library((lib) => lib.body.addAll(generatedClasses));
   }
 
-  Future<LocalizedItems> _getTranslations(
+  Future<LocalizedItemBranch> _getTranslations(
     BuildStep step,
     FlutterTranslate options,
   ) async {
     try {
-      return await KeyMapParser(step, options).parse();
+      return await JsonParser(step, options).parse();
     } catch (e) {
       throw InvalidGenerationSourceError("Ths JSON format is invalid: $e");
     }

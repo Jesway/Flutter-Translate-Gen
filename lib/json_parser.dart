@@ -6,53 +6,53 @@ import 'package:glob/glob.dart';
 
 import 'localized_item.dart';
 
-class KeyMapParser {
+class JsonParser {
   static const List<String> pluralsKeys = ["0", "1", "else"];
 
   final BuildStep step;
   final FlutterTranslate options;
 
-  KeyMapParser(this.step, this.options);
+  JsonParser(this.step, this.options);
 
-  Future<LocalizedItemComponent> parse() async {
+  Future<LocalizedItemBranch> parse() async {
     final assets = step.findAssets(Glob(options.path, recursive: true));
 
-    final root = LocalizedItems(null, null);
+    final root = LocalizedItemBranch(null, null);
     await for (final entity in assets) {
       final Map<String, dynamic> jsonMap = json.decode(
         await step.readAsString(entity),
       );
 
       final lang = entity.pathSegments.last.replaceAll(".json", "");
-      parseRecursive(lang, jsonMap, root);
+      _parseRecursive(lang, jsonMap, root);
     }
 
     return root;
   }
 
-  void parseRecursive(
+  void _parseRecursive(
     String lang,
     Map<String, dynamic> json,
-    LocalizedItems parent,
+    LocalizedItemBranch branch,
   ) {
     for (final key in json.keys) {
       if (pluralsKeys.contains(key)) {
-        parent.isPlural = true;
+        branch.isPlural = true;
         final translation = json[key];
 
         if (translation is String) {
-          final item = parent.ensureItem(key);
-          item.translations[lang] = translation;
+          final leaf = branch.ensureLeaf(key);
+          leaf.translations[lang] = translation;
         }
       } else {
         final translation = json[key];
 
         if (translation is String) {
-          final item = parent.ensureItem(key);
-          item.translations[lang] = translation;
+          final leaf = branch.ensureLeaf(key);
+          leaf.translations[lang] = translation;
         } else if (translation is Map<String, dynamic>) {
-          final items = parent.ensureItems(key);
-          parseRecursive(lang, translation, items);
+          final nextBranch = branch.ensureBranch(key);
+          _parseRecursive(lang, translation, nextBranch);
         }
       }
     }

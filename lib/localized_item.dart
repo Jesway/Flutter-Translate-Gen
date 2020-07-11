@@ -1,11 +1,11 @@
 ﻿import 'package:code_builder/code_builder.dart';
 import 'package:dart_casing/dart_casing.dart';
 
-abstract class LocalizedItemComponent {
+abstract class LocalizedItem {
   final String path;
   final String key;
 
-  LocalizedItemComponent._(this.path, this.key);
+  LocalizedItem._(this.path, this.key);
 
   String get fullPath => path == null || path.isEmpty ? key : "$path.$key";
 
@@ -14,48 +14,49 @@ abstract class LocalizedItemComponent {
   String get camelCasedKey => Casing.camelCase(key);
 }
 
-class LocalizedItems extends LocalizedItemComponent {
-  final Map<String, LocalizedItemComponent> _children;
+class LocalizedItemBranch extends LocalizedItem {
+  final Map<String, LocalizedItem> _children;
   bool isPlural;
 
-  LocalizedItems(String path, String key)
+  LocalizedItemBranch(String path, String key)
       : _children = {},
         isPlural = false,
         super._(path, key);
 
-  LocalizedItemComponent operator [](String key) => _children[key];
+  LocalizedItem operator [](String key) => _children[key];
 
-  void operator []=(String key, LocalizedItemComponent item) =>
-      _children[key] = item;
+  void operator []=(String key, LocalizedItem item) => _children[key] = item;
 
-  Iterable<LocalizedItem> get leafs =>
-      _children.values.whereType<LocalizedItem>();
+  Iterable<LocalizedItemLeaf> get leafs =>
+      _children.values.whereType<LocalizedItemLeaf>();
 
-  Iterable<LocalizedItems> get branches =>
-      _children.values.whereType<LocalizedItems>().where((v) => !v.isPlural);
+  Iterable<LocalizedItemBranch> get branches => _children.values
+      .whereType<LocalizedItemBranch>()
+      .where((v) => !v.isPlural);
 
-  Iterable<LocalizedItems> get plurals =>
-      _children.values.whereType<LocalizedItems>().where((v) => v.isPlural);
+  Iterable<LocalizedItemBranch> get plurals => _children.values
+      .whereType<LocalizedItemBranch>()
+      .where((v) => v.isPlural);
 
-  LocalizedItem ensureItem(String child) {
+  LocalizedItemLeaf ensureLeaf(String child) {
     if (this[child] == null) {
-      final newItem = LocalizedItem(_pathFor(key), child);
+      final newItem = LocalizedItemLeaf(_pathFor(key), child);
       this[child] = newItem;
       return newItem;
-    } else if (this[child] is LocalizedItem) {
-      return this[child] as LocalizedItem;
+    } else if (this[child] is LocalizedItemLeaf) {
+      return this[child] as LocalizedItemLeaf;
     } else {
       throw StateError("${_pathFor(child)} is not translated consistently");
     }
   }
 
-  LocalizedItems ensureItems(String child) {
+  LocalizedItemBranch ensureBranch(String child) {
     if (this[child] == null) {
-      final newItem = LocalizedItems(_pathFor(key), child);
+      final newItem = LocalizedItemBranch(_pathFor(key), child);
       this[child] = newItem;
       return newItem;
-    } else if (this[child] is LocalizedItems) {
-      return this[child] as LocalizedItems;
+    } else if (this[child] is LocalizedItemBranch) {
+      return this[child] as LocalizedItemBranch;
     } else {
       throw StateError("${_pathFor(child)} is not translated consistently");
     }
@@ -74,10 +75,10 @@ class LocalizedItems extends LocalizedItemComponent {
   }
 }
 
-class LocalizedItem extends LocalizedItemComponent {
+class LocalizedItemLeaf extends LocalizedItem {
   final Map<String, String> translations;
 
-  LocalizedItem(String path, String key)
+  LocalizedItemLeaf(String path, String key)
       : translations = {},
         super._(path, key);
 
