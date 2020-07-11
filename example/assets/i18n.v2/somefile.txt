@@ -1,0 +1,2 @@
+This is a bad file, just as it was described in
+https://github.com/bratan/flutter_translate_gen/issues/3

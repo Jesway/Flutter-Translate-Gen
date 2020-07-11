@@ -6,6 +6,6 @@ part 'i18n.g.dart';
 
 @FlutterTranslate(
   path: 'assets/i18n.v2',
-  missingTranslations: ErrorLevel.ignore,
+  missingTranslations: ErrorLevel.warning,
 )
 const i18n = _$I18n();

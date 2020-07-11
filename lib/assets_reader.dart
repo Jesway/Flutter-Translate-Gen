@@ -15,12 +15,14 @@ class AssetsReader {
 
     final result = <String, Map<String, dynamic>>{};
     await for (final entity in assets) {
-      final Map<String, dynamic> jsonMap = jsonDecode(
-        await step.readAsString(entity),
-      );
+      if (entity.pathSegments.last.endsWith(".json")) {
+        final Map<String, dynamic> jsonMap = jsonDecode(
+          await step.readAsString(entity),
+        );
 
-      final lang = entity.pathSegments.last.replaceAll(".json", "");
-      result[lang] = jsonMap;
+        final lang = entity.pathSegments.last.replaceAll(".json", "");
+        result[lang] = jsonMap;
+      }
     }
 
     return result;
