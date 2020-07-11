@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -16,7 +16,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
   const FlutterTranslateGen();
 
   @override
-  Future<String> generateForAnnotatedElement(
+  Future<Library> generateLibraryForAnnotatedElement(
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
@@ -34,9 +34,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
       translations,
       className,
     );
-    final generatedLib = Library((lib) => lib.body.addAll(generatedClasses));
-
-    return _createOutput(generatedLib);
+    return Library((lib) => lib.body.addAll(generatedClasses));
   }
 
   TranslateKeysOptions _parseOptions(ConstantReader annotation) =>
@@ -56,18 +54,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
       throw InvalidGenerationSourceError("Ths JSON format is invalid: $e");
     }
   }
-
-  String _createOutput(Library generatedLib) {
-    final DartEmitter emitter = DartEmitter(Allocator());
-    return DartFormatter().format(generatedLib.accept(emitter).toString());
-  }
-
-  void _validateClassName(String className) {
-    if (!className.startsWith("_\$")) {
-      throw InvalidGenerationSourceError(
-          "The annotated class name (currently '$className') must start with _\$. For example _\$Keys or _\$LocalizationKeys");
-    }
-  }
+}
 
   void _validateClass(Element element) {
     if (element is! ClassElement) {

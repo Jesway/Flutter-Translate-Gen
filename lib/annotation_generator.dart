@@ -1,8 +1,9 @@
 ﻿import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:async/async.dart';
 import 'package:build/build.dart';
+import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 
 abstract class AnnotationGenerator<T> extends Generator {
@@ -15,53 +16,25 @@ abstract class AnnotationGenerator<T> extends Generator {
     final values = <String>{};
 
     for (final annotatedElement in library.annotatedWith(typeChecker)) {
-      final generatedValue = generateForAnnotatedElement(
+      final generatedLibrary = await generateLibraryForAnnotatedElement(
         annotatedElement.element,
         annotatedElement.annotation,
         buildStep,
       );
 
-      await for (final value in normalizeGeneratorOutput(generatedValue)) {
-        assert(value == null || (value.length == value.trim().length));
-
-        values.add(value);
-      }
+      values.add(_createOutput(generatedLibrary));
     }
 
     return values.join('\n\n');
   }
 
-  dynamic generateForAnnotatedElement(
+  FutureOr<Library> generateLibraryForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep);
 
-  Stream<String> normalizeGeneratorOutput(Object value) {
-    if (value == null) {
-      return const Stream.empty();
-    } else if (value is Future) {
-      return StreamCompleter.fromFuture(value.then(normalizeGeneratorOutput));
-    } else if (value is String) {
-      // ignore: parameter_assignments
-      value = [value];
-    }
-
-    if (value is Iterable) {
-      // ignore: parameter_assignments
-      value = Stream.fromIterable(value);
-    }
-
-    if (value is Stream) {
-      return value.where((e) => e != null).map((e) {
-        if (e is String) {
-          return e.trim();
-        }
-
-        throw _argError(e);
-      }).where((e) => e.isNotEmpty);
-    }
-
-    throw _argError(value);
+  String _createOutput(Library generatedLibrary) {
+    final DartEmitter emitter = DartEmitter(Allocator());
+    return DartFormatter().format(
+      generatedLibrary.accept(emitter).toString(),
+    );
   }
-
-  ArgumentError _argError(Object value) => ArgumentError(
-      'Must be a String or be an Iterable/Stream containing String values. Found `${Error.safeToString(value)}` (${value.runtimeType}).');
 }
