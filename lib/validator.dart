@@ -26,7 +26,7 @@ class Validator {
             if (!leaf.argsForLang(lang).contains(arg)) {
               result.log(
                 'Missing argument "$arg" in "$lang:${leaf.fullPath}"',
-                ErrorLevel.error,
+                options.missingArguments,
               );
             }
           }

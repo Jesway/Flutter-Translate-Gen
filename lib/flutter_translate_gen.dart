@@ -17,12 +17,14 @@ class FlutterTranslate {
   final String path;
   final String baseline;
   final ErrorLevel missingTranslations;
+  final ErrorLevel missingArguments;
 
-  const FlutterTranslate({
-    this.path,
-    this.baseline,
-    this.missingTranslations = ErrorLevel.error,
-  }) : assert(path != null);
+  const FlutterTranslate(
+      {this.path,
+      this.baseline,
+      this.missingTranslations = ErrorLevel.error,
+      this.missingArguments = ErrorLevel.error})
+      : assert(path != null);
 
   FlutterTranslate._fromAnnotation(ConstantReader annotation)
       : this(path: annotation.asString("path"));
