@@ -1,12 +1,12 @@
 ﻿import 'package:code_builder/code_builder.dart';
-import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
+import 'package:flutter_translate_gen/flutter_translate_gen.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
 
 class KeysClassGenerator {
   const KeysClassGenerator();
 
   List<Class> generate(
-      TranslateKeysOptions options, LocalizedItems items, String className) {
+      FlutterTranslate options, LocalizedItems items, String className) {
     return _createClassRecursive(items, className);
   }
 

@@ -5,14 +5,24 @@ import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_utils/dart_utils.dart';
-import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
 import 'package:flutter_translate_gen/key_map_parser.dart';
 import 'package:flutter_translate_gen/keys_class_generator.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
 import 'package:source_gen/source_gen.dart';
 
-class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
+class FlutterTranslate {
+  final String path;
+
+  const FlutterTranslate({
+    this.path,
+  }) : assert(path != null);
+
+  FlutterTranslate._fromAnnotation(ConstantReader annotation)
+      : this(path: annotation.asString("path"));
+}
+
+class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
   const FlutterTranslateGen();
 
   @override
@@ -31,7 +41,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
     }
 
     final className = "_\$${Casing.titleCase(element.name, separator: "")}";
-    final options = _parseOptions(annotation);
+    final options = FlutterTranslate._fromAnnotation(annotation);
     final translations = await _getTranslations(buildStep, options);
 
     final generatedClasses = const KeysClassGenerator().generate(
@@ -42,16 +52,9 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
     return Library((lib) => lib.body.addAll(generatedClasses));
   }
 
-  TranslateKeysOptions _parseOptions(ConstantReader annotation) =>
-      TranslateKeysOptions(
-        path: annotation.asString("path"),
-        caseStyle: annotation.asEnum("caseStyle", CaseStyle.values),
-        separator: annotation.asString("separator"),
-      );
-
   Future<LocalizedItems> _getTranslations(
     BuildStep step,
-    TranslateKeysOptions options,
+    FlutterTranslate options,
   ) async {
     try {
       return await KeyMapParser(step, options).parse();
