@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'keys.dart';
+part of 'i18n.dart';
 
 // **************************************************************************
 // Generator: FlutterTranslateGen
 // **************************************************************************
 
-class _$_$Keys {
-  const _$_$Keys();
+class _$I18n {
+  const _$I18n();
 
   final _$Nested nested = const _$Nested();
 

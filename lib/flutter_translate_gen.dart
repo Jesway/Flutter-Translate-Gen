@@ -1,9 +1,9 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:dart_style/dart_style.dart';
+import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_utils/dart_utils.dart';
 import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
@@ -21,11 +21,16 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
-    final className = element.name;
+    if (!element.isConstRootVariable) {
+      throw InvalidGenerationSourceError(
+        "The annotated element is not a root const variable! "
+        "TranslateKeyOptions should be used on expressions "
+        "like const i18n = _\$I18N();",
+        element: element,
+      );
+    }
 
-    _validateClass(element);
-    _validateClassName(className);
-
+    final className = "_\$${Casing.titleCase(element.name, separator: "")}";
     final options = _parseOptions(annotation);
     final translations = await _getTranslations(buildStep, options);
 
@@ -56,14 +61,11 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
   }
 }
 
-  void _validateClass(Element element) {
-    if (element is! ClassElement) {
-      throw InvalidGenerationSourceError(
-        "The annotated element is not a Class! TranslateKeyOptions should be used on Classes.",
-        element: element,
-      );
-    }
-  }
+extension on Element {
+  bool get isConstRootVariable =>
+      this is VariableElement &&
+      (this as VariableElement).isConst &&
+      enclosingElement is CompilationUnitElement;
 }
 
 extension on ConstantReader {

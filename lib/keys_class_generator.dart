@@ -7,7 +7,7 @@ class KeysClassGenerator {
 
   List<Class> generate(
       TranslateKeysOptions options, LocalizedItems items, String className) {
-    return _createClassRecursive(items, "_\$$className");
+    return _createClassRecursive(items, className);
   }
 
   List<Class> _createClassRecursive(LocalizedItems parent, String name) {
@@ -31,7 +31,7 @@ class KeysClassGenerator {
     return Field(
       (f) => f
         ..name = items.camelCasedKey
-        ..type = _type(items.className)
+        ..type = type(items.className)
         ..modifier = FieldModifier.final$
         ..assignment = "const ${items.className}()".asCode,
     );
@@ -48,7 +48,7 @@ class KeysClassGenerator {
     return Method(
       (m) => m
         ..name = item.camelCasedKey
-        ..returns = _string$
+        ..returns = stringType
         ..type = MethodType.getter
         ..lambda = true
         ..body = "translate(${item.fullPathLiteral})".asCode,
@@ -59,7 +59,7 @@ class KeysClassGenerator {
     return Method(
       (m) => m
         ..name = item.camelCasedKey
-        ..returns = _string$
+        ..returns = stringType
         ..lambda = true
         ..optionalParameters.addAll(args.asParameters)
         ..body =
@@ -77,12 +77,12 @@ class KeysClassGenerator {
     return Method(
       (m) => m
         ..name = plural.camelCasedKey
-        ..returns = _string$
+        ..returns = stringType
         ..lambda = true
         ..requiredParameters.add(
           Parameter((p) => p
             ..name = "value"
-            ..type = _int$),
+            ..type = intType),
         )
         ..optionalParameters.addAll(args.asParameters)
         ..body = body,
@@ -90,12 +90,12 @@ class KeysClassGenerator {
   }
 }
 
-final Reference _string$ = _type("String");
-final Reference _int$ = _type("int");
-final Reference _dynamic$ = _type("dynamic");
-final Reference _required$ = _type("required");
+final Reference stringType = type("String");
+final Reference intType = type("int");
+final Reference dynamicType = type("dynamic");
+final Reference requiredAnnotation = type("required");
 
-Reference _type(String type) => TypeReference((trb) => trb.symbol = type);
+Reference type(String type) => TypeReference((trb) => trb.symbol = type);
 
 extension on String {
   Code get asCode => Code(this);
@@ -107,8 +107,8 @@ extension on Set<String> {
   Iterable<Parameter> get asParameters => map((param) => Parameter(
         (p) => p
           ..name = param
-          ..type = _dynamic$
-          ..annotations.add(_required$)
+          ..type = dynamicType
+          ..annotations.add(requiredAnnotation)
           ..named = true,
       ));
 }
