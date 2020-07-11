@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -13,10 +13,9 @@ import 'package:source_gen/source_gen.dart';
 
 class FlutterTranslate {
   final String path;
+  final String baseline;
 
-  const FlutterTranslate({
-    this.path,
-  }) : assert(path != null);
+  const FlutterTranslate({this.path, this.baseline}) : assert(path != null);
 
   FlutterTranslate._fromAnnotation(ConstantReader annotation)
       : this(path: annotation.asString("path"));
