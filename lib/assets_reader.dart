@@ -13,7 +13,7 @@ class AssetsReader {
   ) async {
     final assets = step.findAssets(Glob(options.path, recursive: true));
 
-    final result = <String, dynamic>{};
+    final result = <String, Map<String, dynamic>>{};
     await for (final entity in assets) {
       final Map<String, dynamic> jsonMap = jsonDecode(
         await step.readAsString(entity),
