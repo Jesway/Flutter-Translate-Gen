@@ -77,6 +77,7 @@ class LocalizedItemBranch extends LocalizedItem {
 
 class LocalizedItemLeaf extends LocalizedItem {
   final Map<String, String> translations;
+  final _argsRegex = RegExp(r"\{([^\}]+)\}");
 
   LocalizedItemLeaf(String path, String key)
       : translations = {},
@@ -86,11 +87,15 @@ class LocalizedItemLeaf extends LocalizedItem {
       translations[lang] = translation;
 
   Set<String> get args {
-    final regex = RegExp(r"\{([^\}]+)\}");
-    return translations.values
-        .expand((translation) =>
-            regex.allMatches(translation.replaceAll("{{value}}", "ignored")))
-        .map((e) => e.group(1))
-        .toSet();
+    return translations.values.expand(_argsForTranslation).toSet();
   }
+
+  Set<String> argsForLang(String lang) {
+    return _argsForTranslation(translations[lang]);
+  }
+
+  Set<String> _argsForTranslation(String translation) => _argsRegex
+      .allMatches(translation.replaceAll("{{value}}", "ignored"))
+      .map((e) => e.group(1))
+      .toSet();
 }

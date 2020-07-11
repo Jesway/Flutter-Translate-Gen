@@ -107,4 +107,41 @@ main() {
     expect(result.errors, ['Missing translation "de:nested.b"']);
     expect(result.warnings, []);
   });
+
+  test("missing plurals translation causes error", () {
+    final data = {
+      "en": {
+        "plurals": {
+          "zero": "zero",
+          "one": "one",
+          "else": "more",
+        }
+      },
+      "de": {
+        "plurals": {
+          "zero": "null",
+          "one": "eins",
+        },
+      },
+    };
+
+    final result = validate(data);
+
+    expect(result.isValid, false);
+    expect(result.errors, ['Missing translation "de:plurals.else"']);
+    expect(result.warnings, []);
+  });
+
+  test("missing arg causes error", () {
+    final data = {
+      "en": {"test": "This is a {test}"},
+      "de": {"test": "Dies ist ein Test"}
+    };
+
+    final result = validate(data);
+
+    expect(result.isValid, false);
+    expect(result.errors, ['Missing argument "test" in "de:test"']);
+    expect(result.warnings, []);
+  });
 }

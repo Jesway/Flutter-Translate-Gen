@@ -7,21 +7,28 @@ class Validator {
   Result validate(
     FlutterTranslate options,
     LocalizedItemBranch root,
-    Iterable<String> knownLanguages,
+    Iterable<String> allLanguages,
   ) {
     List<LocalizedItemLeaf> leafs = _flatten(root);
 
     final result = Result();
 
     for (final leaf in leafs) {
-      final languages = leaf.translations.keys;
-      if (knownLanguages.length != languages.length) {
-        for (final lang in knownLanguages) {
-          if (!leaf.translations.containsKey(lang)) {
-            result.log(
-              'Missing translation "$lang:${leaf.fullPath}"',
-              options.missingTranslations,
-            );
+      final allArgs = leaf.args;
+      for (final lang in allLanguages) {
+        if (!leaf.translations.containsKey(lang)) {
+          result.log(
+            'Missing translation "$lang:${leaf.fullPath}"',
+            options.missingTranslations,
+          );
+        } else {
+          for (var arg in allArgs) {
+            if (!leaf.argsForLang(lang).contains(arg)) {
+              result.log(
+                'Missing argument "$arg" in "$lang:${leaf.fullPath}"',
+                ErrorLevel.error,
+              );
+            }
           }
         }
       }
@@ -35,6 +42,7 @@ class Validator {
 
     translations.addAll(branch.leafs);
     translations.addAll(branch.branches.expand(_flatten));
+    translations.addAll(branch.plurals.expand(_flatten));
 
     return translations;
   }
