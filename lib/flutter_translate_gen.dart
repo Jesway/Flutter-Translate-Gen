@@ -11,11 +11,18 @@ import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/translation_class_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
+enum ErrorLevel { ignore, warning, error }
+
 class FlutterTranslate {
   final String path;
   final String baseline;
+  final ErrorLevel missingTranslations;
 
-  const FlutterTranslate({this.path, this.baseline}) : assert(path != null);
+  const FlutterTranslate({
+    this.path,
+    this.baseline,
+    this.missingTranslations = ErrorLevel.error,
+  }) : assert(path != null);
 
   FlutterTranslate._fromAnnotation(ConstantReader annotation)
       : this(path: annotation.asString("path"));
