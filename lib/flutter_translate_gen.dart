@@ -6,8 +6,8 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_utils/dart_utils.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
+import 'package:flutter_translate_gen/assets_reader.dart';
 import 'package:flutter_translate_gen/json_parser.dart';
-import 'package:flutter_translate_gen/localized_item.dart';
 import 'package:flutter_translate_gen/translation_class_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -42,7 +42,8 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
 
     final className = "_\$${Casing.titleCase(element.name, separator: "")}";
     final options = FlutterTranslate._fromAnnotation(annotation);
-    final translations = await _getTranslations(buildStep, options);
+    final files = await _getFiles(buildStep, options);
+    final translations = const JsonParser().parse(files);
 
     final generatedClasses = const TranslationClassGenerator().generate(
       translations,
@@ -51,12 +52,12 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
     return Library((lib) => lib.body.addAll(generatedClasses));
   }
 
-  Future<LocalizedItemBranch> _getTranslations(
+  Future<Map<String, Map<String, dynamic>>> _getFiles(
     BuildStep step,
     FlutterTranslate options,
   ) async {
     try {
-      return await JsonParser(step, options).parse();
+      return await const AssetsReader().read(step, options);
     } catch (e) {
       throw InvalidGenerationSourceError("Ths JSON format is invalid: $e");
     }

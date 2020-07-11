@@ -1,29 +1,18 @@
-import 'dart:convert';
-
-import 'package:build/build.dart';
-import 'package:flutter_translate_gen/flutter_translate_gen.dart';
-import 'package:glob/glob.dart';
-
 import 'localized_item.dart';
 
 class JsonParser {
   static const List<String> pluralsKeys = ["0", "1", "else"];
 
-  final BuildStep step;
-  final FlutterTranslate options;
+  const JsonParser();
 
-  JsonParser(this.step, this.options);
-
-  Future<LocalizedItemBranch> parse() async {
-    final assets = step.findAssets(Glob(options.path, recursive: true));
-
+  LocalizedItemBranch parse(
+    Map<String, Map<String, dynamic>> files,
+  ) {
     final root = LocalizedItemBranch(null, null);
-    await for (final entity in assets) {
-      final Map<String, dynamic> jsonMap = json.decode(
-        await step.readAsString(entity),
-      );
 
-      final lang = entity.pathSegments.last.replaceAll(".json", "");
+    for (final file in files.entries) {
+      final lang = file.key;
+      final jsonMap = file.value;
       _parseRecursive(lang, jsonMap, root);
     }
 
