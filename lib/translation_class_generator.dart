@@ -1,10 +1,16 @@
 ﻿import 'package:code_builder/code_builder.dart';
+import 'package:flutter_translate_gen/flutter_translate_gen.dart';
+import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
 
 class TranslationClassGenerator {
   const TranslationClassGenerator();
 
-  List<Class> generate(LocalizedItemBranch root, String className) {
+  List<Class> generate(
+    LocalizedItemBranch root,
+    String className,
+    FlutterTranslate options,
+  ) {
     return _generateClassRecursive(root, className);
   }
 
@@ -49,18 +55,20 @@ class TranslationClassGenerator {
           ..returns = stringType
           ..type = MethodType.getter
           ..lambda = true
+          ..docs.addAll(leaf.docs)
           ..body = "translate(${leaf.fullPathLiteral})".asCode,
       );
 
-  Method _generateLeafAsMethod(LocalizedItemLeaf item, Set<String> args) =>
+  Method _generateLeafAsMethod(LocalizedItemLeaf leaf, Set<String> args) =>
       Method(
         (m) => m
-          ..name = item.camelCasedKey
+          ..name = leaf.camelCasedKey
           ..returns = stringType
           ..lambda = true
+          ..docs.addAll(leaf.docs)
           ..optionalParameters.addAll(args.asParameters)
           ..body =
-              "translate(${item.fullPathLiteral}, args: ${args.asMap})".asCode,
+              "translate(${leaf.fullPathLiteral}, args: ${args.asMap})".asCode,
       );
 
   Method _generateBranchAsPlural(LocalizedItemBranch plural) {
@@ -75,6 +83,7 @@ class TranslationClassGenerator {
         ..name = plural.camelCasedKey
         ..returns = stringType
         ..lambda = true
+        ..docs.addAll(plural.docs)
         ..requiredParameters.add(
           Parameter((p) => p
             ..name = "value"
@@ -92,6 +101,39 @@ final Reference dynamicType = type("dynamic");
 final Reference requiredAnnotation = type("required");
 
 Reference type(String type) => TypeReference((trb) => trb.symbol = type);
+
+extension on LocalizedItemLeaf {
+  List<String> get docs => [
+        "/// Translations: ",
+        for (final translation in translations.entries)
+          "/// * ${translation.key}: ${translation.value}",
+        "///",
+        "/// parsed from: $fullPath",
+      ];
+}
+
+extension _Plurals on LocalizedItemBranch {
+  List<String> get docs {
+    final languages = leafs.expand((leaf) => leaf.translations.keys).toSet();
+
+    final docs = <String>[];
+    for (var lang in languages) {
+      for (var plural in JsonParser.pluralsKeys) {
+        final leaf = this[plural] as LocalizedItemLeaf;
+        if (leaf != null) {
+          docs.add("/// * $lang:$plural: ${leaf.translations[lang]}");
+        }
+      }
+    }
+
+    return [
+      "/// Translations: ",
+      ...docs,
+      "///",
+      "/// parsed from: $fullPath",
+    ];
+  }
+}
 
 extension on String {
   Code get asCode => Code(this);

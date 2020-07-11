@@ -9,14 +9,12 @@ main() {
 
   Result validate(
     Map<String, Map<String, dynamic>> testData, {
-    String baseline = "en",
     ErrorLevel missingTranslations = ErrorLevel.error,
   }) {
     final root = parser.parse(testData);
     return validator.validate(
         FlutterTranslate(
           path: "",
-          baseline: baseline,
           missingTranslations: missingTranslations,
         ),
         root,
