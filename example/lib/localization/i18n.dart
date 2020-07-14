@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:flutter_translate_gen/flutter_translate_gen.dart';
+import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 
 part 'i18n.g.dart';
 

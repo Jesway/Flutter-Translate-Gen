@@ -5,39 +5,13 @@ import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_casing/dart_casing.dart';
 import 'package:dart_utils/dart_utils.dart';
+import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/annotation_generator.dart';
 import 'package:flutter_translate_gen/assets_reader.dart';
 import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/translation_class_generator.dart';
 import 'package:flutter_translate_gen/validator.dart';
 import 'package:source_gen/source_gen.dart';
-
-enum ErrorLevel { ignore, warning, error }
-
-class FlutterTranslate {
-  final String path;
-  final ErrorLevel missingTranslations;
-  final ErrorLevel missingArguments;
-
-  const FlutterTranslate(
-      {this.path,
-      this.missingTranslations = ErrorLevel.error,
-      this.missingArguments = ErrorLevel.error})
-      : assert(path != null);
-
-  FlutterTranslate._fromAnnotation(ConstantReader annotation)
-      : this(
-          path: annotation.asString("path"),
-          missingTranslations: annotation.asEnum(
-            "missingTranslations",
-            ErrorLevel.values,
-          ),
-          missingArguments: annotation.asEnum(
-            "missingArguments",
-            ErrorLevel.values,
-          ),
-        );
-}
 
 class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
   const FlutterTranslateGen();
@@ -58,7 +32,7 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
     }
 
     final className = "_\$${Casing.titleCase(element.name, separator: "")}";
-    final options = FlutterTranslate._fromAnnotation(annotation);
+    final options = _fromAnnotation(annotation);
     final files = await _getFiles(buildStep, options);
     final translations = const JsonParser().parse(files);
 
@@ -76,7 +50,6 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
       final generatedClasses = const TranslationClassGenerator().generate(
         translations,
         className,
-        options,
       );
       return Library((lib) => lib.body.addAll(generatedClasses));
     } else {
@@ -95,6 +68,19 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
       throw InvalidGenerationSourceError("Ths JSON format is invalid: $e");
     }
   }
+
+  FlutterTranslate _fromAnnotation(ConstantReader annotation) =>
+      FlutterTranslate(
+        path: annotation.asString("path"),
+        missingTranslations: annotation.asEnum(
+          "missingTranslations",
+          ErrorLevel.values,
+        ),
+        missingArguments: annotation.asEnum(
+          "missingArguments",
+          ErrorLevel.values,
+        ),
+      );
 }
 
 extension on Element {

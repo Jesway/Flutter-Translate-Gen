@@ -16,7 +16,10 @@ dependencies:
   code_builder: '>=3.2.0 <4.0.0'
   analyzer: '>=0.36.4 <1.0.0'
   glob: ^1.2.0
-  flutter_translate_annotations: ^1.0.1
+  # TODO point to 1.0.2 as soon as it is merged
+  flutter_translate_annotations:
+    git: https://github.com/avbk/flutter_translate_annotations
+
 
 dev_dependencies:
   build_runner: '>=1.7.0 <2.0.0'

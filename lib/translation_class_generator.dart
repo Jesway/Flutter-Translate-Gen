@@ -1,5 +1,4 @@
 ﻿import 'package:code_builder/code_builder.dart';
-import 'package:flutter_translate_gen/flutter_translate_gen.dart';
 import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
 
@@ -9,7 +8,6 @@ class TranslationClassGenerator {
   List<Class> generate(
     LocalizedItemBranch root,
     String className,
-    FlutterTranslate options,
   ) {
     return _generateClassRecursive(root, className);
   }

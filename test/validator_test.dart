@@ -1,4 +1,4 @@
-import 'package:flutter_translate_gen/flutter_translate_gen.dart';
+import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/json_parser.dart';
 import 'package:flutter_translate_gen/validator.dart';
 import 'package:test/test.dart';

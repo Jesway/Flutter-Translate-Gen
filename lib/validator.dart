@@ -1,4 +1,4 @@
-import 'package:flutter_translate_gen/flutter_translate_gen.dart';
+import 'package:flutter_translate_annotations/flutter_translate_annotations.dart';
 import 'package:flutter_translate_gen/localized_item.dart';
 
 class Validator {

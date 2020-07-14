@@ -10,7 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_translate_annotations: ^1.0.1
+  # TODO point to 1.0.2 as soon as it is merged
+  flutter_translate_annotations:
+    git: https://github.com/avbk/flutter_translate_annotations
   flutter_translate: ^1.6.0
 
 dev_dependencies:
