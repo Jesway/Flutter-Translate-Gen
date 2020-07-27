@@ -10,8 +10,6 @@ abstract class LocalizedItem {
   String get fullPath => path == null || path.isEmpty ? key : "$path.$key";
 
   Code get fullPathLiteral => literalString(fullPath).code;
-
-  String get camelCasedKey => Casing.camelCase(key);
 }
 
 class LocalizedItemBranch extends LocalizedItem {

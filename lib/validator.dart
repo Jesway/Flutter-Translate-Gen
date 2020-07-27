@@ -9,7 +9,7 @@ class Validator {
     LocalizedItemBranch root,
     Iterable<String> allLanguages,
   ) {
-    List<LocalizedItemLeaf> leafs = _flatten(root);
+    final leafs = _flatten(root);
 
     final result = Result();
 
@@ -22,7 +22,7 @@ class Validator {
             options.missingTranslations,
           );
         } else {
-          for (var arg in allArgs) {
+          for (final arg in allArgs) {
             if (!leaf.argsForLang(lang).contains(arg)) {
               result.log(
                 'Missing argument "$arg" in "$lang:${leaf.fullPath}"',

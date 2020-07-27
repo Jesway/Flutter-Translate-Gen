@@ -40,7 +40,9 @@ abstract class AnnotationGenerator<T> extends Generator {
 
   void printList(List<String> messages) {
     const pre = 'Flutter Translate';
+    // ignore: avoid_print
     print(
+      "\n"
       "${pre.padRight(72, '-')}\n\n"
       "${messages.join("\n")}\n"
       "${''.padRight(72, '-')}\n",

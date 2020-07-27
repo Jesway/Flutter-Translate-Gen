@@ -173,3 +173,81 @@ class _$Plural {
   String demoWithArgs(int value, {@required dynamic things}) =>
       translatePlural('plural.demo_with_args', value, args: {"things": things});
 }
+
+class _$Keys {
+  const _$Keys();
+
+  /// Translations:
+  /// * en: Welcome to the home page
+  /// * es: Bienvenido a la página de inicio
+  ///
+  /// parsed from: app_bar.title
+  final String App_Bar_Title = 'app_bar.title';
+
+  /// Translations:
+  /// * en: Cancel
+  /// * es: Cancelar
+  ///
+  /// parsed from: button.cancel
+  final String Button_Cancel = 'button.cancel';
+
+  /// Translations:
+  /// * en: Change Language
+  /// * es: Cambiar idioma
+  ///
+  /// parsed from: button.change_language
+  final String Button_Change_Language = 'button.change_language';
+
+  /// Translations:
+  /// * en: Currently selected language is {language}
+  /// * es: El idioma seleccionado actualmente es {language}
+  ///
+  /// parsed from: language.selected_message
+  final String Language_Selected_Message = 'language.selected_message';
+
+  /// Translations:
+  /// * en: English
+  /// * es: Inglés
+  ///
+  /// parsed from: language.name.en
+  final String Language_Name_En = 'language.name.en';
+
+  /// Translations:
+  /// * en: Spanish
+  /// * es: Español
+  ///
+  /// parsed from: language.name.es
+  final String Language_Name_Es = 'language.name.es';
+
+  /// Translations:
+  /// * en: Persian
+  /// * es: Persa
+  ///
+  /// parsed from: language.name.fa
+  final String Language_Name_Fa = 'language.name.fa';
+
+  /// Translations:
+  /// * en: Please select a language from the list
+  /// * es: Por favor seleccione un idioma de la lista
+  ///
+  /// parsed from: language.selection.message
+  final String Language_Selection_Message = 'language.selection.message';
+
+  /// Translations:
+  /// * en: Language Selection
+  /// * es: Selección de idioma
+  ///
+  /// parsed from: language.selection.title
+  final String Language_Selection_Title = 'language.selection.title';
+
+  /// Translations:
+  /// * en:0: Por favor, comience a presionar el botón 'más'.
+  /// * en:1: Has presionado el botón una vez.
+  /// * en:else: Ha presionado el botón {{value}} veces.
+  /// * es:0: Por favor, comience a presionar el botón 'más'.
+  /// * es:1: Has presionado el botón una vez.
+  /// * es:else: Ha presionado el botón {{value}} veces.
+  ///
+  /// parsed from: plural.demo
+  final String Plural_Demo = 'plural.demo';
+}

@@ -47,7 +47,9 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
         printList(validationResult.warnings);
       }
 
-      final generatedClasses = const TranslationClassGenerator().generate(
+      final generatedClasses = TranslationClassGenerator(
+        options,
+      ).generate(
         translations,
         className,
       );
@@ -69,8 +71,8 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
     }
   }
 
-  FlutterTranslate _fromAnnotation(ConstantReader annotation) =>
-      FlutterTranslate(
+  FlutterTranslate _fromAnnotation(ConstantReader annotation) {
+    return FlutterTranslate(
         path: annotation.asString("path"),
         missingTranslations: annotation.asEnum(
           "missingTranslations",
@@ -80,7 +82,17 @@ class FlutterTranslateGen extends AnnotationGenerator<FlutterTranslate> {
           "missingArguments",
           ErrorLevel.values,
         ),
-      );
+        keysStyle: annotation.asEnum("keysStyle", KeysStyle.values) ??
+            KeysStyle.withTranslate,
+        nestingStyle: annotation.asEnum("nestingStyle", NestingStyle.values) ??
+            NestingStyle.nested,
+        caseStyle: annotation.asEnum(
+              "caseStyle",
+              CaseStyle.values,
+            ) ??
+            CaseStyle.camelCase,
+        separator: annotation.asString("separator") ?? "_");
+  }
 }
 
 extension on Element {

@@ -9,3 +9,12 @@ part 'i18n.g.dart';
   missingTranslations: ErrorLevel.warning,
 )
 const i18n = _$I18n();
+
+@FlutterTranslate(
+  path: 'assets/i18n',
+  missingTranslations: ErrorLevel.warning,
+  keysStyle: KeysStyle.keysOnly,
+  nestingStyle: NestingStyle.flat,
+  caseStyle: CaseStyle.titleCase,
+)
+const Keys = _$Keys();

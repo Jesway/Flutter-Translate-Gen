@@ -75,4 +75,10 @@ main() {
       expected,
     );
   });
+
+  test("FlutterTranslate is backwards compatible", () {
+    expect(Keys.App_Bar_Title, "app_bar.title");
+    expect(Keys.Language_Name_En, "language.name.en");
+    expect(Keys.Plural_Demo, "plural.demo");
+  });
 }
