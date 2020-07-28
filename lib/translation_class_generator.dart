@@ -194,7 +194,7 @@ extension on LocalizedItemLeaf {
   List<String> get docs => [
         "/// Translations: ",
         for (final translation in translations.entries)
-          "/// * ${translation.key}: ${translation.value}",
+          "/// * ${translation.key}: ${translation.value.replaceAll("\n", "\\n")}",
         "///",
         "/// parsed from: $fullPath",
       ];
@@ -209,7 +209,8 @@ extension _Plurals on LocalizedItemBranch {
       for (final plural in JsonParser.pluralsKeys) {
         final leaf = this[plural] as LocalizedItemLeaf;
         if (leaf != null) {
-          docs.add("/// * $lang:$plural: ${leaf.translations[lang]}");
+          docs.add(
+              "/// * $lang:$plural: ${leaf.translations[lang].replaceAll("\n", "\\n")}");
         }
       }
     }

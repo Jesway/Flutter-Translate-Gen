@@ -31,6 +31,12 @@ class _$I18n {
   /// parsed from: params
   String params({@required dynamic something}) =>
       translate('params', args: {"something": something});
+
+  /// Translations:
+  /// * en: This is a multiline test\n\nThis should somehow be reflected in the docs
+  ///
+  /// parsed from: multiline
+  String get multiline => translate('multiline');
 }
 
 class _$Nested {
