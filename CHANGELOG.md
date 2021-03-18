@@ -14,3 +14,7 @@
 ## 1.2.4
 
 - Fixed dependency compatibility issues
+
+## 1.3.0
+
+- Upgraded dependencies
