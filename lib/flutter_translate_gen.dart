@@ -15,20 +15,20 @@ import 'package:source_gen/source_gen.dart';
 
 class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
 {
-    static List<String> reservedKeys = const["0", "1", "else"];
+    static List<String?>? reservedKeys = const["0", "1", "else"];
 
     const FlutterTranslateGen();
 
     @override
-    Future<String> generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) async
+    Future<String?>? generateForAnnotatedElement(Element? element, ConstantReader? annotation, BuildStep? buildStep) async
     {
-        validateClass(element);
+        validateClass(element!);
 
-        final options = parseOptions(annotation);
+        final options = parseOptions(annotation!);
 
         var className = element.name;
 
-        validateClassName(className);
+        validateClassName(className!);
 
         List<LocalizedItem> translations;
 
@@ -41,37 +41,37 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
             throw InvalidGenerationSourceError("Ths JSON format is invalid.");
         }
 
-        final file = Library((lb) => lb..body.addAll([KeysClassGenerator.generateClass(options, translations, className)]));
+        final file = Library((lb) => lb..body.addAll([KeysClassGenerator.generateClass(options!, translations, className)]));
 
-        final DartEmitter emitter = DartEmitter(Allocator());
+        final DartEmitter? emitter = DartEmitter(Allocator());
 
         return DartFormatter().format('${file.accept(emitter)}');
     }
 
-    TranslateKeysOptions parseOptions(ConstantReader annotation)
+    TranslateKeysOptions? parseOptions(ConstantReader? annotation)
     {
         return TranslateKeysOptions(
-                path: annotation.peek("path")?.stringValue,
-                caseStyle: enumFromString(CaseStyle.values, annotation.peek("caseStyle").revive().accessor),
-                separator: annotation.peek("separator")?.stringValue);
+                path: annotation!.peek("path")!.stringValue,
+                caseStyle: enumFromString(CaseStyle.values, annotation.peek("caseStyle")!.revive().accessor),
+                separator: annotation.peek("separator")!.stringValue);
     }
 
-    Future<List<LocalizedItem>> getKeyMap(BuildStep step, TranslateKeysOptions options) async
+    Future<List<LocalizedItem>> getKeyMap(BuildStep? step, TranslateKeysOptions? options) async
     {
         var mapping = <String, List<String>>{};
 
-        var assets = await step.findAssets(Glob(options.path, recursive: true)).toList();
+        var assets = await step!.findAssets(Glob(options!.path, recursive: true)).toList();
 
         for (var entity in assets)
         {
-            Map<String, dynamic> jsonMap = json.decode(await step.readAsString(entity));
+            Map<String?, dynamic>? jsonMap = json.decode(await step.readAsString(entity));
 
             var translationMap = getTranslationMap(jsonMap);
 
-            translationMap.forEach((key, value) => (mapping[key] ??= <String>[]).add(value));
+            translationMap!.forEach((key, value) => (mapping[key!] ??= <String>[]).add(value!));
         }
 
-        var translations = List<LocalizedItem>();
+        var translations = <LocalizedItem>[];
 
         mapping.forEach((id, trans) => translations.add(LocalizedItem(id, trans, getKeyFieldName(id, options))));
 
@@ -89,15 +89,15 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
         }
     }
 
-    Map<String, String> getTranslationMap(Map<String, dynamic> jsonMap, {String parentKey})
+    Map<String?, String?>? getTranslationMap(Map<String?, dynamic>? jsonMap, {String? parentKey})
     {
-        final map = Map<String, String>();
+        final map = Map<String?, String?>();
 
-        for(var entry in jsonMap.keys)
+        for(var entry in jsonMap!.keys)
         {
-            String key;
+            String? key;
 
-            if(reservedKeys.contains(entry))
+            if(reservedKeys!.contains(entry))
             {
                 key = parentKey;
             }
@@ -118,7 +118,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
             {
                 var entries = getTranslationMap(value, parentKey: key);
 
-                map.addAll(entries);
+                map.addAll(entries!);
             }
         }
 
@@ -126,15 +126,15 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
     }
 
 
-    void validateClassName(String className)
+    void validateClassName(String? className)
     {
-        if(!className.startsWith("_\$"))
+        if(!className!.startsWith("_\$"))
         {
             throw InvalidGenerationSourceError("The annotated class name (currently '$className') must start with _\$. For example _\$Keys or _\$LocalizationKeys");
         }
     }
 
-    void validateClass(Element element)
+    void validateClass(Element? element)
     {
         if (element is! ClassElement)
         {
