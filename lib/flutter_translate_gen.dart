@@ -43,7 +43,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
 
         final file = Library((lb) => lb..body.addAll([KeysClassGenerator.generateClass(options, translations, className)]));
 
-        final DartEmitter emitter = DartEmitter(Allocator());
+        final DartEmitter emitter = DartEmitter(allocator: Allocator.none);
 
         return DartFormatter().format('${file.accept(emitter)}');
     }
@@ -71,7 +71,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions>
             translationMap.forEach((key, value) => (mapping[key] ??= <String>[]).add(value));
         }
 
-        var translations = List<LocalizedItem>();
+        List<LocalizedItem> translations = [];
 
         mapping.forEach((id, trans) => translations.add(LocalizedItem(id, trans, getKeyFieldName(id, options))));
 
