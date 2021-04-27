@@ -18,3 +18,7 @@
 ## 1.3.0
 
 - Upgraded dependencies
+
+## 2.0.0
+
+- Upgraded dependencies

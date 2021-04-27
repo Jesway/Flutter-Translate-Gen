@@ -10,7 +10,7 @@ abstract class AnnotationGenerator<T> extends Generator {
   TypeChecker? get typeChecker => TypeChecker.fromRuntime(T);
 
   @override
-  FutureOr<String?>? generate(LibraryReader? library, BuildStep? buildStep) async {
+  FutureOr<String>? generate(LibraryReader? library, BuildStep? buildStep) async {
     final values = Set<String?>();
 
     for (var annotatedElement in library!.annotatedWith(typeChecker!)) {
@@ -30,7 +30,7 @@ abstract class AnnotationGenerator<T> extends Generator {
 
   dynamic generateForAnnotatedElement(Element? element, ConstantReader? annotation, BuildStep? buildStep);
 
-  Stream<String?>? normalizeGeneratorOutput(Object? value) {
+  Stream<String>? normalizeGeneratorOutput(Object? value) {
     if (value == null /* == false */) {
       return const Stream.empty();
     } else if (value is Future) {
