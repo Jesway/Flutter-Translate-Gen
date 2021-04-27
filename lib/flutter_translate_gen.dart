@@ -40,7 +40,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
     final file =
         Library((lb) => lb..body.addAll([KeysClassGenerator.generateClass(options!, translations!, className)]));
 
-    final DartEmitter? emitter = DartEmitter();
+    final DartEmitter? emitter = DartEmitter(allocator: Allocator.none);
 
     return DartFormatter().format('${file.accept(emitter!)}');
   }
