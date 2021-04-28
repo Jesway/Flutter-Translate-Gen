@@ -14,7 +14,7 @@ import 'package:glob/glob.dart';
 import 'package:source_gen/source_gen.dart';
 
 class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
-  static List<String?>? reservedKeys = const ["0", "1", "else"];
+  static List<String>? reservedKeys = const ["0", "1", "else"];
 
   const FlutterTranslateGen();
 
@@ -53,16 +53,16 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
   }
 
   Future<List<LocalizedItem>?> getKeyMap(BuildStep? step, TranslateKeysOptions? options) async {
-    var mapping = <String, List<String>>{};
+    Map<String, List<String>>? mapping = <String, List<String>>{};
 
-    var assets = await step!.findAssets(Glob(options!.path, recursive: true)).toList();
+    final List<AssetId>? assets = await step!.findAssets(Glob(options!.path, recursive: true)).toList();
 
-    for (var entity in assets) {
+    for (final AssetId entity in assets!) {
       Map<String, dynamic>? jsonMap = json.decode(await step.readAsString(entity));
 
-      var translationMap = getTranslationMap(jsonMap);
+      final Map<String, String>? translationMap = getTranslationMap(jsonMap);
 
-      translationMap!.forEach((key, value) => (mapping[key] ??= <String>[]).add(value!));
+      translationMap!.forEach((String? key, String? value) => (mapping[key!] ??= <String>[]).add(value!));
     }
 
     List<LocalizedItem>? translations = [];
@@ -88,7 +88,7 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
   Map<String, String>? getTranslationMap(Map<String, dynamic>? jsonMap, {String? parentKey}) {
     final Map<String, String>? map = Map<String, String>();
 
-    for (var entry in jsonMap!.keys) {
+    for (final String? entry in jsonMap!.keys) {
       String? key;
 
       if (reservedKeys!.contains(entry)) {
