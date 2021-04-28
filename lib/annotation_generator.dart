@@ -13,12 +13,12 @@ abstract class AnnotationGenerator<T> extends Generator {
   FutureOr<String>? generate(LibraryReader? library, BuildStep? buildStep) async {
     final values = Set<String>();
 
-    for (AnnotatedElement? annotatedElement in library!.annotatedWith(typeChecker!)) {
+    for (final AnnotatedElement annotatedElement in library!.annotatedWith(typeChecker!)) {
       final generatedValue =
           generateForAnnotatedElement(annotatedElement.element, annotatedElement.annotation, buildStep!);
 
       final Stream<String>? output = normalizeGeneratorOutput(generatedValue);
-      await for (var value in output!) {
+      await for (final String value in output!) {
         assert((value.length == value.trim().length));
 
         values.add(value);
