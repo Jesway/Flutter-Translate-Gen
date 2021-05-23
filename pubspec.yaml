@@ -1,6 +1,6 @@
 name: flutter_translate_gen
 description: Statically-typed localization keys generator for flutter_translate.
-version: 2.0.0
+version: 2.1.0
 homepage: https://leadcode.dev
 repository: https://github.com/bratan/flutter_translate_gen
 
