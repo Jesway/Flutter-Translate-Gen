@@ -12,4 +12,4 @@ dependencies:
 dev_dependencies:
   flutter_translate_gen:
     path: ../
-  build_runner: ^2.0.1
+  build_runner: ^2.1.1
