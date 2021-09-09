@@ -16,10 +16,7 @@ dependencies:
   dart_casing: ^1.0.1
   dart_style: ^2.0.0
   dart_utils: ^1.0.2
-  flutter_translate_annotations:
-    git:
-      url: https://github.com/seasox/flutter_translate_annotations
-      ref: camel_case_keys
+  flutter_translate_annotations: ^2.0.0
   glob: ^2.0.1
   source_gen: ^1.0.0
 
