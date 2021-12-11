@@ -4,12 +4,12 @@ description: Example for flutter_translate_gen
 version: 1.0.0
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  flutter_translate_annotations: ^2.0.0
+  flutter_translate_annotations: ^2.1.0
 
 dev_dependencies:
   flutter_translate_gen:
     path: ../
-  build_runner: ^2.0.1
+  build_runner: ^2.1.5

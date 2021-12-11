@@ -16,6 +16,3 @@ Please file any issues, bugs or feature request [here](https://github.com/bratan
 ## License
 
 This project is licensed under the [MIT License](https://github.com/bratan/flutter_translate_gen/blob/master/LICENSE)
-
-## Author
-This Flutter package is developed by [Florin Bratan](https://github.com/bratan). You can contact me at <florin@leadcode.dev>

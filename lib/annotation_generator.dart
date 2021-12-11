@@ -21,7 +21,7 @@ abstract class AnnotationGenerator<T> extends Generator
 
             await for (var value in normalizeGeneratorOutput(generatedValue))
             {
-                assert(value == null || (value.length == value.trim().length));
+                assert((value.length == value.trim().length));
 
                 values.add(value);
             }
@@ -32,7 +32,7 @@ abstract class AnnotationGenerator<T> extends Generator
 
     dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep);
 
-    Stream<String> normalizeGeneratorOutput(Object value)
+    Stream<String> normalizeGeneratorOutput(Object? value)
     {
         if (value == null)
         {
@@ -49,7 +49,7 @@ abstract class AnnotationGenerator<T> extends Generator
 
         if (value is Iterable)
         {
-            value = Stream.fromIterable(value as Iterable);
+            value = Stream.fromIterable(value);
         }
 
         if (value is Stream)
