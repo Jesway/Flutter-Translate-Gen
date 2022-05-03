@@ -3,5 +3,5 @@ targets:
     sources:
       include:
         - $package$
-        - assets/i18n/**
+        - assets/i18n/**/*.json
         - lib/**
