@@ -26,3 +26,7 @@
 ## 2.1.0
 
 - Added camel case support
+
+## 2.2.0
+
+- Upgraded dependencies
